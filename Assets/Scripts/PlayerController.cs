@@ -11,14 +11,22 @@ public class PlayerController : MonoBehaviour
     private Rigidbody _rigidbody = null;
     [SerializeField] 
     private PlayerInput _playerInput;
+    [SerializeField]
+    private float _speedMultiplier = 1.0f;
+    [SerializeField]
+    private GameObject _joystick = null;
 
     void Update()
     {
-        //Vector2 moveVec = _playerInput.actions["Move"].ReadValue<Vector2>();
+        
     }
 
     private void OnMove(InputValue value)
     {
-        _rigidbody.velocity = value.Get<Vector2>();
+        Debug.Log("On Move");
+        Vector3 inputVector = value.Get<Vector2>();
+        inputVector.z = inputVector.y;
+        inputVector.y = 0;
+        _rigidbody.velocity = inputVector * _speedMultiplier;
     }
 }
