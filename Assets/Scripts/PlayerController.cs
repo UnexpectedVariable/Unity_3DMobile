@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour
     private float _speedMultiplier = 1.0f;
     [SerializeField]
     private GameObject _joystick = null;
+    [SerializeField]
+    private Transform _cameraTransform = null;
+    [SerializeField]
+    private Vector3 _cameraOffset = Vector3.zero;
 
     private void FixedUpdate()
     {
@@ -26,10 +30,15 @@ public class PlayerController : MonoBehaviour
         inputVector.z = inputVector.y;
         inputVector.y = 0;
         _rigidbody.velocity = inputVector * _speedMultiplier;
+        _animator.SetFloat("Velocity", _rigidbody.velocity.sqrMagnitude);
+        _cameraTransform.position = gameObject.transform.position + _cameraOffset;
+        if (inputVector == Vector3.zero) return;
         gameObject.transform.rotation = Quaternion.LookRotation(inputVector, Vector3.up);
+        //_container.transform.position = gameObject.transform.position;
+        
 
         //_animator.SetBool("IsMoving", true);
-        _animator.SetFloat("Velocity", _rigidbody.velocity.sqrMagnitude);
+        
     }
 
     /*private void OnMove(InputValue value)
