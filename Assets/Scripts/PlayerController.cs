@@ -14,39 +14,60 @@ public class PlayerController : MonoBehaviour
     [SerializeField] 
     private PlayerInput _playerInput;
     [SerializeField]
-    private float _speedMultiplier = 1.0f;
-    [SerializeField]
     private GameObject _joystick = null;
     [SerializeField]
     private Transform _cameraTransform = null;
     [SerializeField]
     private Vector3 _cameraOffset = Vector3.zero;
+    [SerializeField]
+    private float _speedMultiplier = 1.0f;
+    [SerializeField]
+    private float _targetVelocity = 1f;
+
+    [SerializeField]
+    private PIDParameterController _parameterController = null;
+    private PIDController _pidController = null;
+
+    private void Start()
+    {
+        _pidController = _parameterController.Controller;
+        _rigidbody.maxAngularVelocity = 0;
+    }
 
     private void FixedUpdate()
     {
+        _cameraTransform.position = gameObject.transform.position + _cameraOffset;
         Vector3 inputVector = _playerInput.currentActionMap["Move"].ReadValue<Vector2>();
-        //if (inputVector == Vector3.zero) Debug.Log("inputVec is zero");
-
+        _animator.SetFloat("Velocity", inputVector.sqrMagnitude);
+        float throttle = 0f;
+        if (_playerInput.currentActionMap["Move"].IsPressed())
+        {
+            _rigidbody.drag = 0;
+            throttle = _pidController.Update(Time.fixedDeltaTime, _rigidbody.velocity.sqrMagnitude, _targetVelocity * _targetVelocity);
+        }
+        else
+        {
+            _rigidbody.drag = 100;
+        }
         inputVector.z = inputVector.y;
         inputVector.y = 0;
-        _rigidbody.velocity = inputVector * _speedMultiplier;
-        _animator.SetFloat("Velocity", _rigidbody.velocity.sqrMagnitude);
-        _cameraTransform.position = gameObject.transform.position + _cameraOffset;
-        if (inputVector == Vector3.zero) return;
-        gameObject.transform.rotation = Quaternion.LookRotation(inputVector, Vector3.up);
-        //_container.transform.position = gameObject.transform.position;
-        
-
-        //_animator.SetBool("IsMoving", true);
-        
+        Move(inputVector.normalized * Mathf.Sqrt(throttle));
     }
 
-    /*private void OnMove(InputValue value)
+    private bool IsOnGround(out RaycastHit hit)
     {
-        //Debug.Log("On Move");
-        Vector3 inputVector = value.Get<Vector2>();
-        inputVector.z = inputVector.y;
-        inputVector.y = 0;
-        _rigidbody.velocity = inputVector * _speedMultiplier;
-    }*/
+        Debug.DrawRay(gameObject.transform.position, Vector3.down, Color.red);
+        return Physics.Raycast(gameObject.transform.position, Vector3.down, out hit, 1f);
+    }
+
+    private void Move(Vector3 inputVector)
+    {
+        Debug.Log($"Fixed delta time is {Time.fixedDeltaTime}");
+        Debug.Log($"input magnitude {inputVector.sqrMagnitude}");
+        //_rigidbody.AddForce(inputVector * _speedMultiplier * Time.fixedDeltaTime, ForceMode.Force);
+        _rigidbody.AddForce(inputVector, ForceMode.Force);
+
+        if (inputVector == Vector3.zero) return;
+        _rigidbody.MoveRotation(Quaternion.LookRotation(inputVector * Time.fixedDeltaTime, Vector3.up));
+    }
 }
