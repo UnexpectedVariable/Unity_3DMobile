@@ -1,3 +1,4 @@
+using Assets.Scripts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ public class TerrainLock : MonoBehaviour
     [SerializeField]
     private GameObject _terrain = null;
 
+    public event EventHandler<GameObjectEventArgs> TerrainUnlockedEvent = null;
+
     private void Start()
     {
         _resourceDemandManager.DemandsSatisfiedEvent += HandleDemandsSatisfied;
@@ -18,7 +21,9 @@ public class TerrainLock : MonoBehaviour
     private void HandleDemandsSatisfied(object sender, EventArgs args)
     {
         Debug.Log($"Demands satisfied event invoked!");
-        _terrain.SetActive(true);
+        GameObjectEventArgs GOargs = new GameObjectEventArgs();
+        GOargs.GO = _terrain;
+        TerrainUnlockedEvent?.Invoke(this, GOargs);
         gameObject.SetActive(false);
     }
 }
