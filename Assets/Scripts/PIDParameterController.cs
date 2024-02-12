@@ -28,7 +28,7 @@ public class PIDParameterController : MonoBehaviour
 
     private void Initialize()
     {
-        _controller = new PIDController();
+        _controller = new PIDController(float.Parse(_pGainInputField.text), float.Parse(_iGainInputField.text), float.Parse(_dGainInputField.text), 20, DerivativeMeasurement.Velocity);
         _controller.DerivativeMeasurement = DerivativeMeasurement.Velocity;
 
         _pGainInputField.onValueChanged.AddListener(PGainUpdated);
@@ -49,5 +49,16 @@ public class PIDParameterController : MonoBehaviour
     private void IGainUpdated(string gain) 
     {
         _controller.IntegralGain = float.Parse(gain);
+    }
+
+    public void Update()
+    {
+        Report();
+    }
+
+    private void Report()
+    {
+        Vector3 parameters = _controller.GetParameters();
+        Debug.LogWarning($"PID parameters are ({parameters.x}; {parameters.y}; {parameters.z})");
     }
 }

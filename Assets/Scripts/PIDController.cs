@@ -86,7 +86,7 @@ public class PIDController
 
     //private float outputMin = -1;
     //private float outputMax = 1;
-    private float _integralSaturation;
+    private float _integralSaturation = 8;
     private DerivativeMeasurement _derivativeMeasurement;
 
     private float _valueLast;
@@ -113,6 +113,15 @@ public class PIDController
     }
 
 
+    public PIDController(float proportionalGain, float integralGain, float derivativeGain, float integralSaturation, DerivativeMeasurement derivativeMeasurement)
+    {
+        _proportionalGain = proportionalGain;
+        _integralGain = integralGain;
+        _derivativeGain = derivativeGain;
+        _integralSaturation = integralSaturation;
+        _derivativeMeasurement = derivativeMeasurement;
+    }
+
     public void Reset()
     {
         _derivativeInitialized = false;
@@ -121,6 +130,7 @@ public class PIDController
     public float Update(float delta, float currentValue, float targetValue)
     {
         float error = targetValue - currentValue;
+        Debug.LogWarning($"PID error: {error}");
 
         //calculate P term
         float P = _proportionalGain * error;
@@ -159,6 +169,18 @@ public class PIDController
 
         float result = P + I + D;
 
+        Report(P, I, D);
+
         return Mathf.Clamp(result, 0, Mathf.Infinity);
+    }
+
+    public Vector3 GetParameters()
+    {
+        return new Vector3(_proportionalGain, _integralGain, _derivativeGain);
+    }
+
+    private void Report(float p, float i, float d)
+    {
+        Debug.LogWarning($"({p.ToString("n1")}; {i.ToString("n1")}; {d.ToString("n1")})");
     }
 }

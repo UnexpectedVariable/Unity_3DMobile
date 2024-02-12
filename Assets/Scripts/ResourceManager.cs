@@ -25,9 +25,9 @@ public class ResourceManager : MonoBehaviour
     [SerializeField]
     private int _brick = 0;*/
 
-    private Dictionary<Resources, int> _resourceMap = new Dictionary<Resources, int>();
+    private Dictionary<Resources, uint> _resourceMap = new Dictionary<Resources, uint>();
 
-    public int Wood
+    public uint Wood
     {
         get => _resourceMap[Resources.Wood];
         set
@@ -36,7 +36,7 @@ public class ResourceManager : MonoBehaviour
             SetResourceCount(Resources.Wood);
         }
     }
-    public int Stone
+    public uint Stone
     {
         get => _resourceMap[Resources.Stone];
         set
@@ -45,7 +45,7 @@ public class ResourceManager : MonoBehaviour
             SetResourceCount(Resources.Stone);
         }
     }
-    public int Crystal
+    public uint Crystal
     {
         get => _resourceMap[Resources.Crystal];
         set
@@ -54,7 +54,7 @@ public class ResourceManager : MonoBehaviour
             SetResourceCount(Resources.Crystal);
         }
     }
-    public int Lumber
+    public uint Lumber
     {
         get => _resourceMap[Resources.Lumber];
         set
@@ -63,7 +63,7 @@ public class ResourceManager : MonoBehaviour
             SetResourceCount(Resources.Lumber);
         }
     }
-    public int Brick
+    public uint Brick
     {
         get => _resourceMap[Resources.Brick];
         set
@@ -126,5 +126,16 @@ public class ResourceManager : MonoBehaviour
         MakeResourceActive(type);
         int idx = Array.IndexOf(_activeResourceTypes, type);
         _resourceTMPRows[idx].text = $"{_resourceMap[type]}";
+    }
+
+    public void SetResourceCount(uint count, Resources type)
+    {
+        _resourceMap[type] = count;
+        SetResourceCount(type);
+    }
+
+    public uint GetResourceCount(Resources type)
+    {
+        return _resourceMap[type];
     }
 }

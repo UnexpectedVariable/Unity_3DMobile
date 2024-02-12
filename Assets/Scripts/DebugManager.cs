@@ -5,7 +5,7 @@ using UnityEngine;
 public class DebugManager : MonoBehaviour
 {
     public ResourceManager ResourceManager;
-    public int countChange = 0;
+    public uint countChange = 0;
 
     void Update()
     {
