@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 5649153322713821421}
   m_Layer: 0
   m_Name: Hex_Stone
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

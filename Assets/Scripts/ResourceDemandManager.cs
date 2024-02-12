@@ -11,7 +11,9 @@ public class ResourceDemandManager : MonoBehaviour
     [SerializeField]
     private ResourceUIRow[] _resourceUIRows = new ResourceUIRow[5];
 
-    public uint Wood
+    public event EventHandler DemandsSatisfiedEvent = null;
+
+    /*public uint Wood
     {
         get => GetResourceCount(Resources.Wood);
         set
@@ -50,7 +52,7 @@ public class ResourceDemandManager : MonoBehaviour
         {
             SetResourceCount(value, Resources.Brick);
         }
-    }
+    }*/
 
     private void Start()
     {
@@ -67,6 +69,22 @@ public class ResourceDemandManager : MonoBehaviour
         {
             if (row.Type == type) row.Count = count;
         }
+        if (count == 0) CheckDemandsStatus();
+    }
+
+    private void CheckDemandsStatus()
+    {
+        Debug.Log("Check demands invoked!");
+        foreach(var row in _resourceUIRows)
+        {
+            if (row.Count > 0)
+            {
+                Debug.Log($"{row.Type} count: {row.Count}");
+                return;
+            }
+        }
+        Debug.Log($"Is event iniitalized: {DemandsSatisfiedEvent == null}");
+        DemandsSatisfiedEvent?.Invoke(this, EventArgs.Empty);
     }
 
     public uint GetResourceCount(Resources type)

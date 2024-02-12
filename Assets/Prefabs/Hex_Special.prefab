@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 9130364867376030292}
   m_Layer: 0
   m_Name: Hex_Special
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

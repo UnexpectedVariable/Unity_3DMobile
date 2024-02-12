@@ -1,3 +1,4 @@
+using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(PlayerInput))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IObservedGO
 {
     [SerializeField]
     private Animator _animator;
@@ -18,8 +19,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Transform _cameraTransform = null;
     [SerializeField]
-    private Vector3 _cameraOffset = Vector3.zero;
-    [SerializeField]
     private float _speedMultiplier = 1.0f;
     [SerializeField]
     private float _targetVelocity = 1f;
@@ -29,6 +28,8 @@ public class PlayerController : MonoBehaviour
     private PIDController _pidController = null;
 
     private float _defaultDrag = 0f;
+
+    private List<IGOObserver> _observers = new List<IGOObserver>();
 
     private void Start()
     {
@@ -42,36 +43,34 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //Debug.Log($"Player velocity is : {_rigidbody. velocity.magnitude.ToString("0")}");
-        //Debug.Log($"Player scale is: lossy {gameObject.transform.lossyScale}; local {gameObject.transform.localScale}");
-        //Debug.LogWarning($"Current gravity is {Physics.gravity}");
-        //Debug.Log($"Player euler angles: {gameObject.transform.rotation.eulerAngles}");
-        //Debug.Log($"Is player in front of wall: {IsInfrontWall(out RaycastHit hit)}");
-        _cameraTransform.position = gameObject.transform.position + _cameraOffset;
+        if(_rigidbody.velocity.sqrMagnitude > 0)
+        {
+            Notify();
+        }
+        
         Vector3 inputVector = _playerInput.currentActionMap["Move"].ReadValue<Vector2>();
+        inputVector.z = inputVector.y;
+        inputVector.y = 0;
         _animator.SetFloat("Velocity", inputVector.sqrMagnitude);
         float throttle = 0f;
         if (_playerInput.currentActionMap["Move"].IsPressed())
         {
-            if(IsInfrontWall(out RaycastHit hit))
+            if(IsInfrontCollider(out RaycastHit hit))
             {
-                //_rigidbody.isKinematic = true;
-                Vector3 targetPos = new Vector3(transform.position.x, hit.transform.position.y, transform.position.z);
-                Debug.Log($"Wall collider transform: {hit.transform.position}");
-                Debug.Log($"Wall gameobject transform: {hit.collider.gameObject.transform.position}");
-                //Debug.Log($"Target position: {targetPos}");
-                _rigidbody.MovePosition(targetPos);
+                Debug.Log($"{hit.collider.name} hit, tag: {hit.collider.tag}");
+                if (hit.collider.tag == "Terrain")
+                {
+                    Vector3 targetPos = new Vector3(transform.position.x, hit.transform.position.y, transform.position.z);
+                    _rigidbody.MovePosition(targetPos);
+                }
             }
             _rigidbody.drag = _defaultDrag;
             throttle = _pidController.Update(Time.fixedDeltaTime, _rigidbody.velocity.magnitude, _targetVelocity);
-            inputVector.z = inputVector.y;
-            inputVector.y = 0;
-        }
-        else
-        {
-            
         }
         Move(inputVector.normalized * throttle);
+
+        if (inputVector == Vector3.zero) return;
+        Rotate(Quaternion.LookRotation(inputVector * Time.fixedDeltaTime, Vector3.up));
     }
 
     private bool IsOnGround(out RaycastHit hit)
@@ -80,7 +79,7 @@ public class PlayerController : MonoBehaviour
         return Physics.Raycast(gameObject.transform.position + new Vector3(0, gameObject.transform.localScale.y * 0.5f, 0), Vector3.down, out hit, gameObject.transform.localScale.y);
     }
 
-    private bool IsInfrontWall(out RaycastHit hit)
+    private bool IsInfrontCollider(out RaycastHit hit)
     {
         Debug.DrawRay(gameObject.transform.position + new Vector3(0, 0.1f, 0), transform.forward, Color.red, Time.fixedDeltaTime, false);
         return Physics.Raycast(gameObject.transform.position + new Vector3(0, 0.1f, 0), transform.forward, out hit, 0.5f);
@@ -88,11 +87,29 @@ public class PlayerController : MonoBehaviour
 
     private void Move(Vector3 inputVector)
     {
-        //Debug.Log($"Fixed delta time is {Time.fixedDeltaTime}");
-        //Debug.Log($"input magnitude {inputVector.sqrMagnitude}");
         _rigidbody.AddForce(inputVector, ForceMode.Force);
+    }
 
-        if (inputVector == Vector3.zero) return;
-        _rigidbody.MoveRotation(Quaternion.LookRotation(inputVector * Time.fixedDeltaTime, Vector3.up));
+    private void Rotate(Quaternion inputQuaternion)
+    {
+        _rigidbody.MoveRotation(inputQuaternion);
+    }
+
+    public void Attach(IGOObserver observer)
+    {
+        _observers.Add(observer);
+    }
+
+    public void Detach(IGOObserver observer)
+    {
+        _observers.Remove(observer);
+    }
+
+    public void Notify()
+    {
+        foreach (var observer in _observers)
+        {
+            observer.Update(gameObject);
+        }
     }
 }
