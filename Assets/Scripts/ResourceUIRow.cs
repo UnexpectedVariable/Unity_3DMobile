@@ -42,7 +42,7 @@ public class ResourceUIRow : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Initialize()
     {
         if(_autoLoadIcon)
         {

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2376977367810011302}
   m_Layer: 0
   m_Name: floor.001
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 6225984946779755237}
   m_Layer: 0
   m_Name: Bottom.002
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

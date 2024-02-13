@@ -58,6 +58,7 @@ public class ResourceDemandManager : MonoBehaviour
     {
         foreach(var row in _resourceUIRows)
         {
+            row.Initialize();
             if(row.Count == 0) row.gameObject.SetActive(false);
         }
     }

@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour, IObservedGO
     [SerializeField] 
     private PlayerInput _playerInput;
     [SerializeField]
-    private GameObject _joystick = null;
-    [SerializeField]
     private Transform _cameraTransform = null;
     [SerializeField]
     private float _speedMultiplier = 1.0f;
@@ -27,8 +25,6 @@ public class PlayerController : MonoBehaviour, IObservedGO
     private PIDParameterController _parameterController = null;
     private PIDController _pidController = null;
 
-    private float _defaultDrag = 0f;
-
     private List<IGOObserver> _observers = new List<IGOObserver>();
 
     private void Start()
@@ -36,7 +32,6 @@ public class PlayerController : MonoBehaviour, IObservedGO
         //Change where this is done later
         Physics.gravity *= 2;
 
-        _defaultDrag = _rigidbody.drag;
         _pidController = _parameterController.Controller;
         _rigidbody.maxAngularVelocity = 0;
     }
@@ -61,10 +56,10 @@ public class PlayerController : MonoBehaviour, IObservedGO
                 if (hit.collider.tag == "Terrain")
                 {
                     Vector3 targetPos = new Vector3(transform.position.x, hit.transform.position.y, transform.position.z);
+                    Debug.DrawRay(gameObject.transform.position, hit.normal, Color.yellow, Mathf.Infinity);
                     _rigidbody.MovePosition(targetPos);
                 }
             }
-            _rigidbody.drag = _defaultDrag;
             throttle = _pidController.Update(Time.fixedDeltaTime, _rigidbody.velocity.magnitude, _targetVelocity);
         }
         Move(inputVector.normalized * throttle);
@@ -81,8 +76,8 @@ public class PlayerController : MonoBehaviour, IObservedGO
 
     private bool IsInfrontCollider(out RaycastHit hit)
     {
-        Debug.DrawRay(gameObject.transform.position + new Vector3(0, 0.1f, 0), transform.forward, Color.red, Time.fixedDeltaTime, false);
-        return Physics.Raycast(gameObject.transform.position + new Vector3(0, 0.1f, 0), transform.forward, out hit, 0.5f);
+        Debug.DrawRay(gameObject.transform.position, transform.forward, Color.red, Time.fixedDeltaTime, false);
+        return Physics.Raycast(gameObject.transform.position, transform.forward, out hit, 0.5f);
     }
 
     private void Move(Vector3 inputVector)

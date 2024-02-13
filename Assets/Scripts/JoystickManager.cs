@@ -9,6 +9,14 @@ public class JoystickManager : MonoBehaviour
     [SerializeField]
     private GameObject _joystick = null;
 
+    private void Start()
+    {
+        Vector2 screen2D = Camera.main.ScreenToWorldPoint(new Vector3(Screen.height, Screen.width, Camera.main.nearClipPlane));
+        RectTransform joystickRect = (RectTransform)_joystick.transform;
+        _joystick.transform.position = screen2D - joystickRect.rect.size;
+        //joystick.gameObject.SetActive(false);
+    }
+
     private void OnLMBPressed(InputValue value)
     {
         //Debug.Log("OnClick triggered!");
