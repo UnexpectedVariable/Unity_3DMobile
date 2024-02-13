@@ -16,7 +16,12 @@ public class CameraMovementController : MonoBehaviour, IGOObserver
         set => _targetPosition = value;
     }
 
-    private void Update()
+    /*private void Start()
+    {
+        gameObject.transform.position = _targetPosition;
+    }*/
+
+    private void FixedUpdate()
     {
         float delta = _speed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, _targetPosition, delta);
@@ -26,5 +31,10 @@ public class CameraMovementController : MonoBehaviour, IGOObserver
     {
         _targetPosition = observed.transform.position + _cameraOffset;
         Debug.Log($"Camera target position changed to {_targetPosition}");
+    }
+
+    public void SetPositionWithOffset(Vector3 targetPosition)
+    {
+        transform.position = targetPosition + _cameraOffset;
     }
 }

@@ -15,10 +15,6 @@ public class PlayerController : MonoBehaviour, IObservedGO
     [SerializeField] 
     private PlayerInput _playerInput;
     [SerializeField]
-    private Transform _cameraTransform = null;
-    [SerializeField]
-    private float _speedMultiplier = 1.0f;
-    [SerializeField]
     private float _targetVelocity = 1f;
 
     [SerializeField]

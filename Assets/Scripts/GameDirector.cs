@@ -13,8 +13,6 @@ public class GameDirector : MonoBehaviour
     [SerializeField]
     private List<TerrainLock> _locks = null;
     [SerializeField]
-    private float _terrainTransposeSpeed = 1.0f;
-    [SerializeField]
     private ObjectTransposer _transposer = null;
 
     void Start()
@@ -32,6 +30,8 @@ public class GameDirector : MonoBehaviour
         }
 
         _playerController.Attach(_cameraController);
+
+        _cameraController.SetPositionWithOffset(_playerController.transform.position);
     }
 
     private void HandleTerrainUnlockedEvent(object sender, GameObjectEventArgs args)
