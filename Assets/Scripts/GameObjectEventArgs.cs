@@ -9,6 +9,6 @@ namespace Assets.Scripts
 {
     public class GameObjectEventArgs : EventArgs
     {
-        public GameObject GO;
+        public List<GameObject> GOs;
     }
 }

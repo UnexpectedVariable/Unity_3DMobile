@@ -14,6 +14,8 @@ public class GameDirector : MonoBehaviour
     private List<TerrainLock> _locks = null;
     [SerializeField]
     private ObjectTransposer _transposer = null;
+    [SerializeField]
+    private GameObject _water = null;
 
     void Start()
     {
@@ -36,9 +38,12 @@ public class GameDirector : MonoBehaviour
 
     private void HandleTerrainUnlockedEvent(object sender, GameObjectEventArgs args)
     {
-        args.GO.SetActive(true);
-        Vector3 targetPosition = args.GO.transform.position;
-        targetPosition.y = args.GO.transform.lossyScale.y * 2;
-        _transposer.Transpose(args.GO, targetPosition);
+        foreach (var GO in args.GOs)
+        {
+            GO.SetActive(true);
+            Vector3 targetPosition = GO.transform.position;
+            GO.transform.position = new Vector3(GO.transform.position.x, _water.transform.position.y, GO.transform.position.z);
+            _transposer.Transpose(GO, targetPosition);
+        }
     }
 }

@@ -9,7 +9,7 @@ public class TerrainLock : MonoBehaviour
     [SerializeField]
     private ResourceDemandManager _resourceDemandManager = null;
     [SerializeField]
-    private GameObject _terrain = null;
+    private List<GameObject> _terrain = null;
 
     public event EventHandler<GameObjectEventArgs> TerrainUnlockedEvent = null;
 
@@ -22,7 +22,7 @@ public class TerrainLock : MonoBehaviour
     {
         Debug.Log($"Demands satisfied event invoked!");
         GameObjectEventArgs GOargs = new GameObjectEventArgs();
-        GOargs.GO = _terrain;
+        GOargs.GOs = _terrain;
         TerrainUnlockedEvent?.Invoke(this, GOargs);
         gameObject.SetActive(false);
     }
