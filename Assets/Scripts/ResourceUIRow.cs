@@ -46,7 +46,7 @@ public class ResourceUIRow : MonoBehaviour
     {
         if(_autoLoadIcon)
         {
-            _resourceIcon.sprite = (Sprite)AssetDatabase.LoadAssetAtPath(Constants.ResourceIconMap[_type], typeof(Sprite));
+            _resourceIcon.sprite = UnityEngine.Resources.Load<Sprite>(Constants.ResourceIconMap[_type]);
         }
         _count = uint.Parse(_resourceTMPRow.text);
     }

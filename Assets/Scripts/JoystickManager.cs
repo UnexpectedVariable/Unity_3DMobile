@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class JoystickManager : MonoBehaviour
 {
@@ -20,13 +21,30 @@ public class JoystickManager : MonoBehaviour
     private void OnLMBPressed(InputValue value)
     {
         //Debug.Log("OnClick triggered!");
-        _joystick.SetActive(true);
-        _joystick.transform.position = Mouse.current.position.ReadValue();
+        EnableAtPosition(Mouse.current.position.ReadValue());
     }
 
     private void OnLMBReleased(InputValue value)
     {
         //Debug.Log("OnRelease triggered");
         _joystick.SetActive(false);
+    }
+
+    private void OnTouchInitiated(InputValue value)
+    {
+        //Debug.Log($"Touch initiated input action invoked!");
+        EnableAtPosition(value.Get<Vector2>());
+    }
+
+    private void OnTouchReleased(InputValue value)
+    {
+        //Debug.Log($"Touch released input action invoked!");
+        _joystick?.SetActive(false);
+    }
+
+    private void EnableAtPosition(Vector2 position)
+    {
+        _joystick.SetActive(true);
+        _joystick.transform.position = position;
     }
 }

@@ -50,6 +50,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TouchInitiated",
+                    "type": "Value",
+                    "id": "d1c71142-dc71-46ad-ba45-78f27dd0d421",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "TouchReleased",
+                    "type": "Value",
+                    "id": "8a3c114e-7094-4c11-9f79-f593cd41c7b1",
+                    "expectedControlType": "Analog",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -72,6 +90,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "LMBReleased",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fb50e7fa-49a5-4031-b495-759c08f1e330",
+                    "path": "<Touchscreen>/primaryTouch/startPosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchInitiated",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9cf64681-c47d-4e07-9b3f-b030cdc4c40a",
+                    "path": "<Touchscreen>/primaryTouch/press",
+                    "interactions": "Press(pressPoint=0.5,behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchReleased",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -20,6 +20,7 @@ public class GameDirector : MonoBehaviour
     void Start()
     {
         _locks = new List<TerrainLock>(Object.FindObjectsByType<TerrainLock>(FindObjectsInactive.Include, FindObjectsSortMode.None));
+        Physics.gravity *= 2;
 
         Initialize();
     }

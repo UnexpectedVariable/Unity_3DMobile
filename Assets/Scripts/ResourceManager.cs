@@ -14,17 +14,6 @@ public class ResourceManager : MonoBehaviour
     [SerializeField]
     private Image[] _resourceIcons = new Image[3];
 
-    /*[SerializeField]
-    private int _wood = 0;
-    [SerializeField]
-    private int _stone = 0;
-    [SerializeField]
-    private int _crystal = 0;
-    [SerializeField]
-    private int _lumber = 0;
-    [SerializeField]
-    private int _brick = 0;*/
-
     private Dictionary<Resources, uint> _resourceMap = new Dictionary<Resources, uint>();
 
     public uint Wood
@@ -77,8 +66,18 @@ public class ResourceManager : MonoBehaviour
 
     private void Start()
     {
-        InitializeActiveResources();
         InitializeResourceMap();
+        InitializeStartResources();
+        //InitializeActiveResources();
+    }
+
+    private void InitializeStartResources()
+    {
+        SetResourceCount(500, Resources.Brick);
+        SetResourceCount(500, Resources.Lumber);
+        SetResourceCount(500, Resources.Crystal);
+        SetResourceCount(500, Resources.Stone);
+        SetResourceCount(500, Resources.Wood);
     }
 
     private void InitializeActiveResources()
@@ -118,7 +117,7 @@ public class ResourceManager : MonoBehaviour
         _resourceTMPRows[1].text = _resourceTMPRows[0].text;
         _resourceIcons[1].sprite = _resourceIcons[0].sprite;
         _activeResourceTypes[0] = resourceType;
-        _resourceIcons[0].sprite = (Sprite)AssetDatabase.LoadAssetAtPath(Constants.ResourceIconMap[resourceType], typeof(Sprite));
+        _resourceIcons[0].sprite = UnityEngine.Resources.Load<Sprite>(Constants.ResourceIconMap[resourceType]);
     }
 
     private void SetResourceCount(Resources type)

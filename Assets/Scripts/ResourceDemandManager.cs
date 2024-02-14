@@ -102,6 +102,8 @@ public class ResourceDemandManager : MonoBehaviour
         var demands = new Dictionary<Resources, uint>(resourceTypes.Length);
         foreach(Resources resource in resourceTypes)
         {
+            uint count = GetResourceCount(resource);
+            if (count == 0) continue;
             demands.Add(resource, GetResourceCount(resource));
         }
         demands.TrimExcess();

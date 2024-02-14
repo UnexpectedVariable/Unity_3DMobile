@@ -1,6 +1,7 @@
 using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,14 +22,29 @@ public class PlayerController : MonoBehaviour, IObservedGO
     private PIDParameterController _parameterController = null;
     private PIDController _pidController = null;
 
+    [SerializeField]
+    private float _proportionalGain = 0f;
+    [SerializeField]
+    private float _integralGain = 0f;
+    [SerializeField]
+    private float _derivativeGain = 0f;
+    [SerializeField]
+    private float _integralSaturation = 0f;
+    [SerializeField]
+    private DerivativeMeasurement _derivativeMeasurement = DerivativeMeasurement.Velocity;
+
     private List<IGOObserver> _observers = new List<IGOObserver>();
 
     private void Start()
     {
-        //Change where this is done later
-        Physics.gravity *= 2;
-
-        _pidController = _parameterController.Controller;
+        if (_parameterController.Controller != null)
+        {
+            _pidController = _parameterController.Controller;
+        }
+        else
+        {
+            _pidController = new PIDController(_proportionalGain, _integralGain, _derivativeGain, _integralSaturation, _derivativeMeasurement);
+        }
         _rigidbody.maxAngularVelocity = 0;
     }
 
